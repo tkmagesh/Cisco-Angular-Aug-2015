@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bug Tracker</title>
+    <script>
+    /*
+    1. Display a list of bugs
+    2. Add a new bug
+    3. Toggle the 'closed' status of the bug
+    4. Remove closed bugs
+    5. Display statistics
+    6. Search for the bugs
+    7. Sort the bugs
+    8. Improvise the bug display
+    9. Display 'createdAt' for each bug
+    10. Persist the bugs in the localStorage
+    11. Persist the bugs in the server
+    12. Add a 'Product' module (A project can have many bugs, and a bug should be associated with a Product)
+    13. Create a list screen for the Product
+    14. Define navigation
+
+    */
+    </script>
+    <style>
+        .closed {
+            color : red;
+            text-decoration: line-through;
+            font-style: italic;
+            font-weight: bold;
+        }
+        .search, .sort, .list {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bug Tracker</h1>
+    <div class="content">
+        <div class="stats">
+            <span class="closed">3</span>
+            /
+            <span>10</span>
+        </div>
+        <div class="search">
+            <label for="">Search :</label><input type="text" name="" id="">
+        </div>
+        <div class="sort">
+            <label for="">Sort :</label>
+            <input type="text" name="" id="">
+            <label for="">Descending ?:</label>
+            <input type="checkbox" name="" id="">
+        </div>
+        <div class="list">
+            <label for="">Bug :</label>
+            <input type="text" name="" id="">
+            <input type="button" value="Add Bug">
+            <input type="button" value="Remove Closed">
+            <ol>
+                <li>Bug - 1</li>
+                <li class="closed">Bug - 2</li>
+                <li>Bug - 3</li>
+            </ol>
+        </div>
+    </div>
+</body>
+</html>
