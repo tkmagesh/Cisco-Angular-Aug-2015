@@ -43,54 +43,88 @@
             scope.calculator = new SalaryCalculator();
 
             //React to user actions
-            $("#txtBasic").change(function(){
-                var self = this;
-                scope.$apply(function(){
-                    scope.calculator.basic = self.value;
+
+            $("*[app-model]").each(function(index, element){
+                var $element = $(element);
+                var model = $element.attr("app-model");
+
+                $element.change(function(){
+                    var self = this;
+                    scope.$apply(function(){
+                        var expr = model + ' = ' + self.value;
+                        scope.$eval(expr);
+                    });
                 });
+                scope.$watch(model, function(newValue){
+                    $element.val(newValue);
+                });
+
             });
-            $("#txtHra").change(function(){
+
+
+
+          /*  $("#txtHra").change(function(){
                 var self = this;
                 scope.$apply(function(){
                     scope.calculator.hra = self.value;
                 });
             });
+            scope.$watch("calculator.hra", function(newValue){
+                $("#txtHra").val(newValue);
+            });
+
             $("#txtDa").change(function(){
                 var self = this;
                 scope.$apply(function(){
                     scope.calculator.da = self.value;
                 });
             });
+            scope.$watch("calculator.da", function(newValue){
+                $("#txtDa").val(newValue);
+            });
+
             $("#rangeTax").change(function(){
                 var self = this;
                 scope.$apply(function(){
                     scope.calculator.tax = self.value;
                 });
             });
-            $("#btnCalculate").click(function(){
+            scope.$watch("calculator.tax", function(newValue){
+                $("#rangeTax").val(newValue);
+            });*/
+
+            $("*[app-click]").each(function(index, element){
+                var $element = $(element),
+                    expr = $element.attr("app-click");
+                $element.click(function(){
+                    scope.$apply(function(){
+                        scope.$eval(expr);
+                    });
+                });
+            });
+
+            /*$("#btnCalculate").click(function(){
                 scope.$apply(function(){
                     scope.calculator.calculate();
                 });
             });
-
+*/
             //React to model changes
-            scope.$watch("calculator.basic", function(newValue){
-                $("#txtBasic").val(newValue);
-            });
-            scope.$watch("calculator.hra", function(newValue){
-                $("#txtHra").val(newValue);
-            });
-            scope.$watch("calculator.da", function(newValue){
-                $("#txtDa").val(newValue);
-            });
-            scope.$watch("calculator.tax", function(newValue){
-                $("#rangeTax").val(newValue);
-            });
-            scope.$watch("calculator.tax", function(newValue){
+
+            /*scope.$watch("calculator.tax", function(newValue){
                 $("#spanTax").html(newValue);
             });
             scope.$watch("calculator.salary", function(newValue){
                 $("#divResult").html(newValue);
+            });*/
+
+            $("*[app-bind]").each(function(index, element){
+                var $element = $(element);
+                var model = $element.attr("app-bind");
+
+                scope.$watch(model, function(newValue){
+                    $element.html(newValue);
+                });
             });
 
         });
@@ -99,17 +133,28 @@
 <body>
 <h1>Salary Calculator</h1>
 <div class="content">
-    <div class="field"><label for="">Basic :</label><input type="text" name="" id="txtBasic"></div>
-    <div class="field"><label for="">Hra :</label><input type="text" name="" id="txtHra"></div>
-    <div class="field"><label for="">Da :</label><input type="text" name="" id="txtDa"></div>
+    <div class="field">
+        <label for="">Basic :</label>
+        <input type="text" name="" id="txtBasic" app-model="calculator.basic">
+    </div>
+    <div class="field">
+        <label for="">Hra :</label>
+        <input type="text" name="" id="txtHra" app-model="calculator.hra">
+    </div>
+    <div class="field">
+        <label for="">Da :</label>
+        <input type="text" name="" id="txtDa" app-model="calculator.da">
+    </div>
     <div class="field">
         <label for="">Tax :</label>
-        <input type="range" name="" id="rangeTax" min="0" max="30" value="0">
-        <span id="spanTax">[Tax %]</span>
+        <input type="range" name="" id="rangeTax" min="0" max="30" value="0" app-model="calculator.tax">
+        <span id="spanTax" app-bind="calculator.tax">[Tax %]</span>
     </div>
-    <div class="field"><input type="button" value="Calculate" id="btnCalculate"></div>
     <div class="field">
-        <div id="divResult">[Salary]</div>
+        <input type="button" value="Calculate" id="btnCalculate" app-click="calculator.calculate()">
+    </div>
+    <div class="field">
+        <div id="divResult" app-bind="calculator.salary">[Salary]</div>
     </div>
 </div>
 </body>
