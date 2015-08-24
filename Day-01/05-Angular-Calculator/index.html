@@ -36,18 +36,27 @@
             var net = gross * ((100-this.tax.toInt())/100);
             this.salary = net;
         }
-        //View
-        $(document).ready(function(){
-            angular.bootstrap(document.body, []);
-            window.scope = angular.element(document.body).scope();
-            scope.calculator = new SalaryCalculator();
-            scope.$apply();
+
+        var myApp = angular.module("myApp", []);
+        myApp.controller("calculatorController", function($scope){
+            $scope.calculator = new SalaryCalculator();
         });
+
+        myApp.controller("dummyController", function($scope){
+           $scope.reset =  function(){
+               $scope.calculator.basic = 0;
+               $scope.calculator.hra = 0;
+               $scope.calculator.da = 0;
+               $scope.calculator.tax = 0;
+               $scope.calculator.calculate();
+           } ;
+        });
+
     </script>
 </head>
-<body>
+<body ng-app="myApp">
 <h1>Salary Calculator</h1>
-<div class="content">
+<div class="content" ng-controller="calculatorController">
     <div class="field">
         <label for="">Basic :</label>
         <input type="text" name="" id="txtBasic" ng-model="calculator.basic">
@@ -70,6 +79,9 @@
     </div>
     <div class="field">
         <div id="divResult" ng-bind="calculator.salary | currency:'Rs'">[Salary]</div>
+    </div>
+    <div ng-controller="dummyController">
+        <input type="button" value="Reset" ng-click="reset()">
     </div>
 </div>
 </body>
