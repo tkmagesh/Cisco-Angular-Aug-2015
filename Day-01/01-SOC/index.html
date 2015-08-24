@@ -18,16 +18,32 @@
     </style>
     <script src="jquery-1.11.2.js"></script>
     <script>
+        //Model
+        function SalaryCalculator(){
+            this.basic = 0;
+            this.hra = 0;
+            this.da = 0;
+            this.tax = 0;
+            this.salary = 0;
+        }
+        SalaryCalculator.prototype.calculate = function(){
+            var gross = this.basic + this.hra + this.da;
+            var net = gross * ((100-this.tax)/100);
+            this.salary = net;
+        }
+
+        //View
         $(document).ready(function(){
+           var calculator = new SalaryCalculator();
            $("#btnCalculate").click(function(){
-              var basic = parseInt($("#txtBasic").val(),10),
-                  hra = parseInt($("#txtHra").val(),10),
-                  da = parseInt($("#txtDa").val(),10),
-                  tax = parseInt($("#rangeTax").val(),10);
+               calculator.basic = parseInt($("#txtBasic").val(),10);
+               calculator.hra = parseInt($("#txtHra").val(),10);
+               calculator.da = parseInt($("#txtDa").val(),10);
+               calculator.tax = parseInt($("#rangeTax").val(),10);
+
+               calculator.calculate();
                
-               var gross = basic + hra + da;
-               var net = gross * ((100-tax)/100);
-               $("#divResult").html(net);
+               $("#divResult").html(calculator.salary);
            });
            $("#rangeTax").change(function(){
                $("#spanTax").html(this.value);
