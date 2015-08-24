@@ -15,6 +15,31 @@
         };
 
         $(function(){
+            angular.bootstrap(document.body, []);
+            window.scope = angular.element(document.body).scope();
+
+            scope.greeter = greeter;
+
+            //React to user action
+            $("#txtName").change(function(){
+                var currentName = this.value;
+                scope.$apply(function(){
+                    scope.greeter.name = currentName;
+                });
+            });
+            $("#btnGreet").click(function(){
+                scope.$apply(function(){
+                    scope.greeter.greet();
+                });
+            });
+
+            //React to model changes
+            scope.$watch("greeter.name", function(newValue){
+                $("#txtName").val(newValue);
+            });
+            scope.$watch("greeter.greetMsg", function(newValue){
+                $("#divMessage").html(newValue);
+            });
 
         })
     </script>
