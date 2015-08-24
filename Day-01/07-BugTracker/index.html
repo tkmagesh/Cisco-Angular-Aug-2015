@@ -33,14 +33,31 @@
             margin-bottom: 10px;
         }
     </style>
+    <script src="angular.js"></script>
+    <script>
+        var bugTrackerApp = angular.module("bugTrackerApp", []);
+        bugTrackerApp.controller("bugsController", function($scope){
+              $scope.bugs = [
+                 {name : "Stack overflow error", isClosed : false},
+                 {name : "Object reference not set to an instance of an object", isClosed : true},
+                 {name : "Undefined is not a function", isClosed : false},
+                 {name : "Invalid argument exception", isClosed : false}
+              ];
+            $scope.newBug = '';
+            $scope.addBug = function(){
+                $scope.bugs.push($scope.newBug);
+            };
+        })
+
+    </script>
 </head>
-<body>
+<body ng-app="bugTrackerApp">
     <h1>Bug Tracker</h1>
-    <div class="content">
+    <div class="content" ng-controller="bugsController">
         <div class="stats">
             <span class="closed">3</span>
             /
-            <span>10</span>
+            <span>{{bugs.length}}</span>
         </div>
         <div class="search">
             <label for="">Search :</label><input type="text" name="" id="">
@@ -53,13 +70,11 @@
         </div>
         <div class="list">
             <label for="">Bug :</label>
-            <input type="text" name="" id="">
-            <input type="button" value="Add Bug">
+            <input type="text" name="" id="" ng-model="newBug">
+            <input type="button" value="Add Bug" ng-disabled="newBug === ''" ng-click="addBug()">
             <input type="button" value="Remove Closed">
             <ol>
-                <li>Bug - 1</li>
-                <li class="closed">Bug - 2</li>
-                <li>Bug - 3</li>
+                <li ng-repeat="bug in bugs">{{bug.name}}</li>
             </ol>
         </div>
     </div>
