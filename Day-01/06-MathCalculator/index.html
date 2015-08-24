@@ -11,19 +11,54 @@
             font-weight: bold;
         }
     </style>
+    <script src="angular.js"></script>
+    <script>
+        var calculator = {
+            add : function(n1, n2){
+                return n1 + n2;
+            },
+            subtract : function(n1, n2){
+                return n1 - n2;
+            },
+            multiply : function(n1, n2){
+                return n1 * n2;
+            },
+            divide : function(n1, n2){
+                return n1 / n2;
+            }
+        };
+        var calculatorApp = angular.module("calculatorApp", []);
+        calculatorApp.controller("calculatorController", function($scope){
+            $scope.number1 = 0;
+            $scope.number2 = 0;
+            $scope.operation = '';
+            $scope.calculate = function(){
+                var n1 = parseInt($scope.number1),
+                    n2 = parseInt($scope.number2);
+                $scope.result = calculator[$scope.operation](n1,n2);
+                ++$scope.calculateCount;
+            };
+            $scope.result = 0;
+            $scope.calculateCount =0;
+        });
+
+    </script>
 </head>
-<body>
-    <div>
-        <input type="text" name="" id="">
-        <select name="" id="">
+<body ng-app="calculatorApp">
+    <div ng-controller="calculatorController">
+       <div>
+           Calculation Count : <span ng-bind="calculateCount"></span>
+       </div>
+        <input type="text" name="" id="" ng-model="number1">
+        <select name="" id="" ng-model="operation">
             <option value="add">add</option>
             <option value="subtract">subtract</option>
             <option value="divide">divide</option>
             <option value="multiply">multiply</option>
         </select>
-        <input type="text" name="" id="">
-        <input type="button" value="Calculate">
-        <div id="divResult">[Result]</div>
+        <input type="text" name="" id="" ng-model="number2">
+        <input type="button" value="Calculate" ng-click="calculate()">
+        <div id="divResult" ng-bind="result">[Result]</div>
     </div>
 </body>
 </html>
