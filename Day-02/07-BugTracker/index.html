@@ -39,19 +39,43 @@
     <script src="angular.js"></script>
     <script>
         var bugTrackerApp = angular.module("bugTrackerApp", []);
-        bugTrackerApp.controller("bugsController", function($scope){
+
+        /*bugTrackerApp.value("Bug", function (name, isClosed){
+            this.name = name;
+            this.isClosed = isClosed;
+            this.toggle = function(){
+                this.isClosed = !this.isClosed;
+            };
+        });*/
+
+        bugTrackerApp.value("bugDefaults", {
+            name : '',
+            isClosed : false
+        });
+
+
+        bugTrackerApp.factory("Bug", function(bugDefaults){
+            function Bug(name, isClosed){
+                this.name = name || bugDefaults.name;
+                this.isClosed = typeof isClosed === 'undefined' ? bugDefaults.isClosed : isClosed;
+            }
+            Bug.prototype.toggle = function(){
+                this.isClosed = !this.isClosed;
+            }
+            return Bug;
+        });
+
+        bugTrackerApp.controller("bugsController", function($scope, Bug){
+
               $scope.bugs = [
-                 {name : "Stack overflow error", isClosed : false},
+                 /*{name : "Stack overflow error", isClosed : false},
                  {name : "Object reference not set to an instance of an object", isClosed : true},
                  {name : "Undefined is not a function", isClosed : false},
-                 {name : "Invalid argument exception", isClosed : false}
+                 {name : "Invalid argument exception", isClosed : false}*/
               ];
             $scope.newBug = '';
             $scope.addBug = function(){
-                var newBug = {
-                    name : $scope.newBug,
-                    isClosd : false
-                }
+                var newBug = new Bug($scope.newBug, false);
                 $scope.bugs.push(newBug);
             };
            /* $scope.selectedBug = $scope.bugs[0];
@@ -59,7 +83,8 @@
                 $scope.selectedBug = bug;
             }*/
             $scope.toggle = function(bug){
-                bug.isClosed = !bug.isClosed;
+                //bug.isClosed = !bug.isClosed;
+                bug.toggle();
             };
 
             $scope.getClosedCount = function(){
