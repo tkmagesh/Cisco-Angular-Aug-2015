@@ -7,9 +7,9 @@
     /*
     1. Display a list of bugs - done
     2. Add a new bug - done
-    3. Toggle the 'closed' status of the bug
-    4. Remove closed bugs
-    5. Display statistics
+    3. Toggle the 'closed' status of the bug - done
+    4. Remove closed bugs - done
+    5. Display statistics - done
     6. Search for the bugs
     7. Sort the bugs
     8. Improvise the bug display
@@ -28,6 +28,9 @@
             text-decoration: line-through;
             font-style: italic;
             font-weight: bold;
+        }
+        li{
+            cursor: pointer;
         }
         .search, .sort, .list {
             margin-bottom: 10px;
@@ -58,6 +61,20 @@
             $scope.toggle = function(bug){
                 bug.isClosed = !bug.isClosed;
             };
+
+            $scope.getClosedCount = function(){
+                return $scope.bugs.reduce(function(result, bug){
+                    return bug.isClosed ? ++result : result;
+                },0);
+            };
+
+            $scope.removeClosed = function(){
+                for(var i=$scope.bugs.length-1; i>=0; i--){
+                    if ($scope.bugs[i].isClosed){
+                        $scope.bugs.splice(i,1);
+                    }
+                }
+            };
         })
 
     </script>
@@ -66,7 +83,7 @@
     <h1>Bug Tracker</h1>
     <div class="content" ng-controller="bugsController">
         <div class="stats">
-            <span class="closed">3</span>
+            <span class="closed">{{getClosedCount()}}</span>
             /
             <span>{{bugs.length}}</span>
         </div>
@@ -83,7 +100,7 @@
             <label for="">Bug :</label>
             <input type="text" name="" id="" ng-model="newBug">
             <input type="button" value="Add Bug" ng-disabled="newBug === ''" ng-click="addBug()">
-            <input type="button" value="Remove Closed">
+            <input type="button" value="Remove Closed" ng-click="removeClosed()">
             <ol>
                 <li ng-repeat="bug in bugs" ng-click="toggle(bug)" ng-class="{closed : bug.isClosed}">{{bug}}</li>
             </ol>
