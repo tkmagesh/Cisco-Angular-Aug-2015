@@ -12,13 +12,28 @@
     5. Display statistics - done
     6. Search for the bugs - done
     7. Sort the bugs - done
-    8. Improvise the bug display
-    9. Display 'createdAt' for each bug
+    8. Improvise the bug display - done
+    9. Display 'createdAt' for each bug - done
     10. Persist the bugs in the localStorage
     11. Persist the bugs in the server
     12. Add a 'Product' module (A project can have many bugs, and a bug should be associated with a Product)
     13. Create a list screen for the Product
     14. Define navigation
+
+    localStorage -> window.localStorage
+        key/value store (key should be unique)
+        both key and value should be string
+
+        - setItem(key, value)
+        - getItem(key) // => value
+        - removeItem(key)
+        - key(index) // => key at index
+        - clear()
+        - length
+
+        Hits
+        use Date.now().toString() for unique key
+        use angular.toJson() and angular.fromJson() for searialization and deserialization of bug objects
 
     */
     </script>
@@ -29,16 +44,37 @@
             font-style: italic;
             font-weight: bold;
         }
+        ol{
+            width: 60%;
+        }
         li{
+            list-style: none;
+            padding: 5px;
+            border : 2px solid black;
+            background-color: lightgray;
+            margin-bottom: 5px;
+            border-radius: 4px;
             cursor: pointer;
+        }
+        .bugName{
+            font-size: 18pt;
+        }
+        .timestamp{
+            font-size: small;
+            font-weight: bold;
+            font-style: italic;
         }
         .search, .sort, .list {
             margin-bottom: 10px;
         }
     </style>
     <script src="angular.js"></script>
+    <script src="moment.js"></script>
+    <script src="utils.js"></script>
     <script>
-        var bugTrackerApp = angular.module("bugTrackerApp", []);
+
+
+        var bugTrackerApp = angular.module("bugTrackerApp", ["utils"]);
 
         /*bugTrackerApp.value("Bug", function (name, isClosed){
             this.name = name;
@@ -58,6 +94,7 @@
                 defaults = defaults || {};
                 this.name = defaults.name || bugDefaults.name;
                 this.isClosed = typeof defaults.isClosed === 'undefined' ? bugDefaults.isClosed : defaults.isClosed;
+                this.createdAt = defaults.createdAt || new Date();
             }
             Bug.prototype.toggle = function(){
                 this.isClosed = !this.isClosed;
@@ -68,10 +105,10 @@
         bugTrackerApp.controller("bugsController", function($scope, Bug){
 
               $scope.bugs = [
-                 new Bug({name : "Stack overflow error", isClosed : false}),
-                 new Bug({name : "Object reference not set to an instance of an object", isClosed : true}),
-                 new Bug({name : "Undefined is not a function", isClosed : false}),
-                 new Bug({name : "Invalid argument error", isClosed : false}),
+                 new Bug({name : "Stack overflow error", isClosed : false, createdAt : new Date(2015,7,2)}),
+                 new Bug({name : "Object reference not set to an instance of an object", isClosed : true, createdAt : new Date(2015,7,12)}),
+                 new Bug({name : "Undefined is not a function", isClosed : false, createdAt : new Date(2015,7,20)}),
+                 new Bug({name : "Invalid argument error", isClosed : false, createdAt : new Date(2015,7,23)}),
               ];
             $scope.newBug = '';
             $scope.addBug = function(){
@@ -102,13 +139,7 @@
             };
         })
 
-        bugTrackerApp.value("defaultTrimLength", 40);
-         bugTrackerApp.filter("trimText", function(defaultTrimLength){
-            return function(data, trimLength){
-                trimLength = trimLength || defaultTrimLength;
-                return data.length < trimLength ? data : data.substr(0,trimLength) + '...';
-            };
-        });
+
 
     </script>
 </head>
@@ -140,9 +171,12 @@
             <input type="button" value="Add Bug" ng-disabled="newBug === ''" ng-click="addBug()">
             <input type="button" value="Remove Closed" ng-click="removeClosed()">
             <ol>
-                <li
-                    ng-repeat="bug in bugs | filter:searchBug | orderBy:sortBug.by:sortBug.order"
-                    ng-click="toggle(bug)" ng-class="{closed : bug.isClosed}">{{bug.name | trimText}}</li>
+                <li ng-repeat="bug in bugs | filter:searchBug | orderBy:sortBug.by:sortBug.order">
+                   <div class="bugName" ng-click="toggle(bug)" ng-class="{closed : bug.isClosed}">
+                       {{bug.name | trimText}}
+                   </div>
+                   <div class="timestamp">{{bug.createdAt | toMoment}}</div>
+                    </li>
             </ol>
             <!--<style>
                 .highlight{
