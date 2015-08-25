@@ -10,8 +10,8 @@
     3. Toggle the 'closed' status of the bug - done
     4. Remove closed bugs - done
     5. Display statistics - done
-    6. Search for the bugs
-    7. Sort the bugs
+    6. Search for the bugs - done
+    7. Sort the bugs - done
     8. Improvise the bug display
     9. Display 'createdAt' for each bug
     10. Persist the bugs in the localStorage
@@ -52,7 +52,6 @@
             name : '',
             isClosed : false
         });
-
 
         bugTrackerApp.factory("Bug", function(bugDefaults){
             function Bug(defaults){
@@ -103,6 +102,13 @@
             };
         })
 
+         bugTrackerApp.filter("trimText", function(){
+            return function(data, trimLength){
+                console.log(data);
+                return data.length < trimLength ? data : data.substr(0,trimLength) + '...';
+            };
+        });
+
     </script>
 </head>
 <body ng-app="bugTrackerApp">
@@ -110,7 +116,7 @@
     <div class="content" ng-controller="bugsController">
 
         <div class="stats">
-            <span class="closed">{{getClosedCount()}}</span>
+            <span class="closed">{{ (bugs | filter:{isClosed : true}).length  }}</span>
             /
             <span>{{bugs.length}}</span>
         </div>
@@ -123,9 +129,9 @@
         </div>
         <div class="sort">
             <label for="">Sort :</label>
-            <input type="text" name="" id="">
+            <input type="text" ng-model="sortBug.by">
             <label for="">Descending ?:</label>
-            <input type="checkbox" name="" id="">
+            <input type="checkbox" ng-model="sortBug.order">
         </div>
         <div class="list">
             <label for="">Bug :</label>
@@ -134,8 +140,8 @@
             <input type="button" value="Remove Closed" ng-click="removeClosed()">
             <ol>
                 <li
-                    ng-repeat="bug in bugs | filter:searchBug"
-                    ng-click="toggle(bug)" ng-class="{closed : bug.isClosed}">{{bug}}</li>
+                    ng-repeat="bug in bugs | filter:searchBug | orderBy:sortBug.by:sortBug.order"
+                    ng-click="toggle(bug)" ng-class="{closed : bug.isClosed}">{{bug.name | trimText}}</li>
             </ol>
             <!--<style>
                 .highlight{
