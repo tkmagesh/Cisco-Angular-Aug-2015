@@ -108,6 +108,7 @@
 <body ng-app="bugTrackerApp">
     <h1>Bug Tracker</h1>
     <div class="content" ng-controller="bugsController">
+
         <div class="stats">
             <span class="closed">{{getClosedCount()}}</span>
             /
@@ -115,7 +116,10 @@
         </div>
         <div class="search">
             <label for="">Search :</label>
-            <input type="text" ng-model="searchBug">
+            <input type="text" ng-model="searchBug.name">
+            <label for="">isClosed ? :</label>
+            <input type="checkbox" ng-model="searchBug.isClosed">
+            <input type="button" value="Show All" ng-click="searchBug.isClosed = undefined">
         </div>
         <div class="sort">
             <label for="">Sort :</label>
