@@ -55,9 +55,10 @@
 
 
         bugTrackerApp.factory("Bug", function(bugDefaults){
-            function Bug(name, isClosed){
-                this.name = name || bugDefaults.name;
-                this.isClosed = typeof isClosed === 'undefined' ? bugDefaults.isClosed : isClosed;
+            function Bug(defaults){
+                defaults = defaults || {};
+                this.name = defaults.name || bugDefaults.name;
+                this.isClosed = typeof defaults.isClosed === 'undefined' ? bugDefaults.isClosed : defaults.isClosed;
             }
             Bug.prototype.toggle = function(){
                 this.isClosed = !this.isClosed;
@@ -68,14 +69,14 @@
         bugTrackerApp.controller("bugsController", function($scope, Bug){
 
               $scope.bugs = [
-                 /*{name : "Stack overflow error", isClosed : false},
-                 {name : "Object reference not set to an instance of an object", isClosed : true},
-                 {name : "Undefined is not a function", isClosed : false},
-                 {name : "Invalid argument exception", isClosed : false}*/
+                 new Bug({name : "Stack overflow error", isClosed : false}),
+                 new Bug({name : "Object reference not set to an instance of an object", isClosed : true}),
+                 new Bug({name : "Undefined is not a function", isClosed : false}),
+                 new Bug({name : "Invalid argument error", isClosed : false}),
               ];
             $scope.newBug = '';
             $scope.addBug = function(){
-                var newBug = new Bug($scope.newBug, false);
+                var newBug = new Bug({name : $scope.newBug});
                 $scope.bugs.push(newBug);
             };
            /* $scope.selectedBug = $scope.bugs[0];
@@ -113,7 +114,8 @@
             <span>{{bugs.length}}</span>
         </div>
         <div class="search">
-            <label for="">Search :</label><input type="text" name="" id="">
+            <label for="">Search :</label>
+            <input type="text" ng-model="searchBug">
         </div>
         <div class="sort">
             <label for="">Sort :</label>
@@ -127,7 +129,9 @@
             <input type="button" value="Add Bug" ng-disabled="newBug === ''" ng-click="addBug()">
             <input type="button" value="Remove Closed" ng-click="removeClosed()">
             <ol>
-                <li ng-repeat="bug in bugs" ng-click="toggle(bug)" ng-class="{closed : bug.isClosed}">{{bug}}</li>
+                <li
+                    ng-repeat="bug in bugs | filter:searchBug"
+                    ng-click="toggle(bug)" ng-class="{closed : bug.isClosed}">{{bug}}</li>
             </ol>
             <!--<style>
                 .highlight{
