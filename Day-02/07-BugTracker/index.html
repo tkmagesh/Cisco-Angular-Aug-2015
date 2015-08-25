@@ -92,6 +92,7 @@
         bugTrackerApp.factory("Bug", function(bugDefaults){
             function Bug(defaults){
                 defaults = defaults || {};
+                this.id = defaults.id || Date.now().toString();
                 this.name = defaults.name || bugDefaults.name;
                 this.isClosed = typeof defaults.isClosed === 'undefined' ? bugDefaults.isClosed : defaults.isClosed;
                 this.createdAt = defaults.createdAt || new Date();
@@ -102,17 +103,43 @@
             return Bug;
         });
 
-        bugTrackerApp.controller("bugsController", function($scope, Bug){
+        bugTrackerApp.factory("bugStorage", function(Bug){
+            var storage = window.localStorage;
+            return {
+                getAll : function(){
+                    var result = [];
+                    for(var i=0; i<storage.length; i++){
+                        var key = storage.key(i);
+                        var value = storage.getItem(key);
+                        var bugData = angular.fromJson(value);
+                        var bug = new Bug(bugData);
+                        result.push(bug);
+                    }
+                    return result;
+                },
+                save : function(bug){
+                    storage.setItem(bug.id, angular.toJson(bug));
+                },
+                remove : function(bug){
+                    storage.removeItem(bug.id);
+                }
+            }
+        })
 
-              $scope.bugs = [
+        bugTrackerApp.controller("bugsController", function($scope, Bug, bugStorage){
+
+              /*$scope.bugs = [
                  new Bug({name : "Stack overflow error", isClosed : false, createdAt : new Date(2015,7,2)}),
                  new Bug({name : "Object reference not set to an instance of an object", isClosed : true, createdAt : new Date(2015,7,12)}),
                  new Bug({name : "Undefined is not a function", isClosed : false, createdAt : new Date(2015,7,20)}),
                  new Bug({name : "Invalid argument error", isClosed : false, createdAt : new Date(2015,7,23)}),
-              ];
+              ];*/
+            $scope.bugs = bugStorage.getAll();
+
             $scope.newBug = '';
             $scope.addBug = function(){
                 var newBug = new Bug({name : $scope.newBug});
+                bugStorage.save(newBug);
                 $scope.bugs.push(newBug);
             };
            /* $scope.selectedBug = $scope.bugs[0];
@@ -122,6 +149,7 @@
             $scope.toggle = function(bug){
                 //bug.isClosed = !bug.isClosed;
                 bug.toggle();
+                bugStorage.save(bug);
             };
 
             $scope.getClosedCount = function(){
@@ -133,6 +161,7 @@
             $scope.removeClosed = function(){
                 for(var i=$scope.bugs.length-1; i>=0; i--){
                     if ($scope.bugs[i].isClosed){
+                        bug.remove($scope.bugs[i]);
                         $scope.bugs.splice(i,1);
                     }
                 }
