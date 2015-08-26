@@ -142,7 +142,7 @@
 
         bugTrackerApp.service("bugService", function($http, Bug, $q){
            this.getAll = function(){
-               var deferred = $q.defer();
+               /*var deferred = $q.defer();
 
                 var promise = $http.get("http://localhost:8585/bugs");
                 promise.then(function(response){
@@ -152,7 +152,15 @@
                     deferred.resolve(bugs);
                 });
 
-               return deferred.promise;
+               return deferred.promise;*/
+
+                return $http
+                        .get("http://localhost:8585/bugs")
+                        .then(function(response){
+                            return response.data.map(function(bugData){
+                                return new Bug(bugData);
+                            });
+                        });
            };
            this.save = function(bug){
                //fill in the blanks
