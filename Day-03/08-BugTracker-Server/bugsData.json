@@ -1,0 +1,34 @@
+{
+  "bugs": [
+    {
+      "id": 4,
+      "name": "object reference not set to an instance of an object",
+      "isClosed": false,
+      "createdAt": "2015-08-07T18:30:00.000Z"
+    },
+    {
+      "name": "divide by zero error",
+      "isClosed": false,
+      "createdAt": "2015-08-06T18:30:00.000Z",
+      "id": 5
+    },
+    {
+      "id": 6,
+      "name": "Server communication failure",
+      "isClosed": false,
+      "createdAt": "2015-08-09T07:04:59.138Z"
+    },
+    {
+      "id": 7,
+      "name": "User authentication malfunctions",
+      "isClosed": false,
+      "createdAt": "2015-08-09T07:05:51.925Z"
+    },
+    {
+      "name": "Stack overflow error",
+      "isClosed": false,
+      "createdAt": "2015-08-11T11:04:17.062Z",
+      "id": 8
+    }
+  ]
+}
