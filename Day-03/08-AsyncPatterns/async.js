@@ -60,7 +60,27 @@ function addClient(x,y){
     adder.add(100,200);
 }
 
+/* Async - 3 (Promises) */
+function add(x,y){
+    var promise = new Promise(function(resolve, reject){
+        console.log("[SP] Processing ", x , " and ", y);
+        setTimeout(function(){
+            var result = x + y;
+            console.log("[SP] returning result");
+            resolve(result);
+        },4000);
+    });
 
+    return promise;
+}
+
+function addClient(x,y){
+    console.log("[SC] triggering add");
+    var promise = add(x,y);
+    promise.then(function(result){
+        console.log("[SC] result = ", result);
+    });
+}
 
 
 
