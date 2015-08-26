@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Routing App</title>
+    <script src="angular.js"></script>
+    <script src="angular-route.js"></script>
+    <script>
+        var myApp = angular.module("myApp", ["ngRoute"])
+        myApp.config(function($routeProvider){
+           $routeProvider
+                .when("/products", {
+                    templateUrl : "templates/products.html",
+                    controller : "productsController"
+                })
+                .when("/products/:id", {
+                    templateUrl : "templates/productInfo.html",
+                    controller : "productInfoController"
+                })
+                .when("/customers", {
+                    //template: "<h3>Customers</h3>"
+               templateUrl : "templates/customers.html"
+                })
+                .otherwise({
+                    redirectTo : "/products"
+                });
+        });
+        myApp.service("productsService", function(){
+            this.getAll = function(){
+                return [
+                    {id : 1, name : 'Pen', cost : 30, units : 20, desc : 'Ut fore quem non cupidatat, sunt voluptate de imitarentur, nulla incididunt familiaritatem, multos te do magna singulis. Ne officia iis mandaremus, legam quo appellat ne enim an ne ex philosophari, e labore nulla ut mentitum. Quo malis e enim ab consequat si velit. Ab sint probant familiaritatem, quis admodum ut cillum dolore, id ipsum exquisitaque o ubi vidisse sed offendit, do nisi aute '},
+                    {id : 2, name : 'Hen', cost : 80, units : 70, desc : 'Ut fore quem non cupidatat, sunt voluptate de imitarentur, nulla incididunt familiaritatem, multos te do magna singulis. Ne officia iis mandaremus, legam quo appellat ne enim an ne ex philosophari, e labore nulla ut mentitum. Quo malis e enim ab consequat si velit. Ab sint probant familiaritatem, quis admodum ut cillum dolore, id ipsum exquisitaque o ubi vidisse sed offendit, do nisi aute '},
+                    {id : 3, name : 'Ten', cost : 50, units : 50, desc : 'Ut fore quem non cupidatat, sunt voluptate de imitarentur, nulla incididunt familiaritatem, multos te do magna singulis. Ne officia iis mandaremus, legam quo appellat ne enim an ne ex philosophari, e labore nulla ut mentitum. Quo malis e enim ab consequat si velit. Ab sint probant familiaritatem, quis admodum ut cillum dolore, id ipsum exquisitaque o ubi vidisse sed offendit, do nisi aute '},
+                    {id : 4, name : 'Den', cost : 60, units : 80, desc : 'Ut fore quem non cupidatat, sunt voluptate de imitarentur, nulla incididunt familiaritatem, multos te do magna singulis. Ne officia iis mandaremus, legam quo appellat ne enim an ne ex philosophari, e labore nulla ut mentitum. Quo malis e enim ab consequat si velit. Ab sint probant familiaritatem, quis admodum ut cillum dolore, id ipsum exquisitaque o ubi vidisse sed offendit, do nisi aute '},
+                ]
+            }
+        });
+        myApp.controller("productsController", function($scope, productsService){
+            $scope.products = productsService.getAll();
+        });
+        myApp.controller("productInfoController", function($scope, productsService, $routeParams){
+            var pid = parseInt($routeParams.id, 10);
+            $scope.product = productsService.getAll().filter(function(product){
+                return product.id === pid;
+            })[0];
+        });
+    </script>
+</head>
+<body ng-app="myApp">
+    <h1>Routing App</h1>
+    <a href="#/products">Products</a>
+    <a href="#/customers">Customers</a>
+    <hr>
+    <div ng-view></div>
+</body>
+</html>
