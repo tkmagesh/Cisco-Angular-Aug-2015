@@ -140,14 +140,34 @@
 
         });
 
-        bugTrackerApp.controller("bugsController", function($scope, Bug, $http){
-            $scope.bugs = [];
-            var promise = $http.get("http://localhost:8585/bugs");
-            promise.then(function(response){
-                $scope.bugs = response.data.map(function(bugData){
-                    return new Bug(bugData);
+        bugTrackerApp.service("bugService", function($http, Bug, $q){
+           this.getAll = function(){
+               var deferred = $q.defer();
+
+                var promise = $http.get("http://localhost:8585/bugs");
+                promise.then(function(response){
+                    var bugs = response.data.map(function(bugData){
+                        return new Bug(bugData);
+                    });
+                    deferred.resolve(bugs);
                 });
+
+               return deferred.promise;
+           };
+           this.save = function(bug){
+               //fill in the blanks
+           };
+           this.remove = function(bug){
+               //fill in the blanks
+           };
+        });
+
+        bugTrackerApp.controller("bugsController", function($scope, Bug, bugService){
+
+            bugService.getAll().then(function(bugs){
+                $scope.bugs = bugs;
             });
+
             $scope.addBug = function(){
                 var newBug = new Bug({name : $scope.newBug});
                 $scope.bugs.push(newBug);
