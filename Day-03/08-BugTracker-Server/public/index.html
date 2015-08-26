@@ -117,6 +117,36 @@
             }
         })*/
 
+        bugTrackerApp.provider("greeter", function(){
+            console.log("in configuration");
+            var _greetMsg = 'Have a nice day';
+            return {
+                setGreetMsg : function(greetMsg){
+                    _greetMsg = greetMsg;
+                },
+                $get : function(){
+                    console.log("in initialization");
+                    return {
+                        greet : function(name){
+                            return name + ", " + _greetMsg;
+                        }
+                    }
+                }
+            }
+        });
+
+
+        bugTrackerApp.config(function(greeterProvider, bugServiceProvider){
+            console.log("greeterProvider = ", greeterProvider);
+            greeterProvider.setGreetMsg('Happy holidays');
+            bugServiceProvider.setUrl('http://localhost:8000/');
+        });
+
+        bugTrackerApp.run(function(greeter){
+            console.log("greeter = ", greeter);
+            console.log(greeter.greet("Magesh"));
+        });
+
         bugTrackerApp.service("bugStorage", function BugStorage(Bug){
             var storage = window.localStorage;
 
@@ -140,9 +170,9 @@
 
         });
 
-        bugTrackerApp.service("bugService", function($http, Bug, $q){
+        /*bugTrackerApp.service("bugService", function($http, Bug, $q){
            this.getAll = function(){
-               /*var deferred = $q.defer();
+               var deferred = $q.defer();
 
                 var promise = $http.get("http://localhost:8585/bugs");
                 promise.then(function(response){
@@ -152,7 +182,7 @@
                     deferred.resolve(bugs);
                 });
 
-               return deferred.promise;*/
+               return deferred.promise;
 
                 return $http
                         .get("http://localhost:8585/bugs")
@@ -168,6 +198,35 @@
            this.remove = function(bug){
                //fill in the blanks
            };
+        });*/
+
+        bugTrackerApp.provider("bugService", function(){
+            var _url = 'http://localhost:8585/';
+
+            return {
+                setUrl : function(url){
+                    _url = url;
+                },
+                $get : function bugServiceFactory($http, Bug, $q){
+                    return {
+                        getAll : function(){
+                            return $http
+                                    .get(_url + 'bugs')
+                                    .then(function(response){
+                                        return response.data.map(function(bugData){
+                                            return new Bug(bugData);
+                                        });
+                                    });
+                            },
+                        save : function(bug){
+                       //fill in the blanks
+                        },
+                        remove : function(bug){
+                       //fill in the blanks
+                        }
+                    }
+                }
+            }
         });
 
         bugTrackerApp.controller("bugsController", function($scope, Bug, bugService){
@@ -190,7 +249,15 @@
                     }
                 }
             };
-        })
+        });
+
+        bugTrackerApp.config(function(){
+            console.log("app being configured");
+        });
+
+        bugTrackerApp.run(function($http){
+            console.log("app being initialized");
+        });
 
 
 
